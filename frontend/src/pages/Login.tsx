@@ -1,64 +1,132 @@
-import { Container, Typography, Button, Box } from '@mui/material';
+import { useState } from 'react';
+import { 
+  Container, 
+  Typography, 
+  TextField, 
+  Button, 
+  Box, 
+  Paper,
+  Avatar,
+  Alert
+} from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+  const [usuario, setUsuario] = useState('');
+  const [password, setPassword] = useState('');
+  const [mensajeError, setMensajeError] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState(false);
+  const navigate = useNavigate();
+
+  // Credenciales "de la base de datos"
+  const bduser = 'Alejandro';
+  const bdpasswd = 'admin';
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    
+    console.log('Usuario ingresado:', usuario);
+    console.log('Contraseña ingresada:', password);
+
+    // Verificar credenciales
+    if (usuario === bduser && password === bdpasswd) {
+      console.log('✅ Acceso concedido');
+      setMensajeError(false);  // Oculta Alert de error
+      setMensajeExito(true);   // Muestra Alert de éxito
+      
+      // Navegar a Home después de 1.5 segundos (para que se vea el Alert)
+      setTimeout(() => {
+        navigate('/home');
+      }, 1500);
+    } else {
+      console.log('❌ Acceso denegado');
+      setMensajeExito(false);  // Oculta Alert de éxito
+      setMensajeError(true);   // Muestra Alert de error
+    }
+  };
+
   return (
-    <main> {/* Región principal de contenido*/}
-      <Container maxWidth="md" sx={{ mt: 4 }}>
-        <Typography variant="h1" color="primary" gutterBottom>
-          Página de Login de Alejandro Fleitas Correa
-        </Typography>
+    <Container maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
+      >
+        <Paper
+          elevation={6}
+          sx={{
+            padding: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            width: '100%',
+          }}
+        >
+          <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
+            <LockOutlinedIcon />
+          </Avatar>
 
-        <section> {/* Sección de texto*/}
-          <Box sx={{ mt: 4 }}>
-            <Typography variant="h2" color="secondary" gutterBottom>
-              Título H2 - Heading 2
-            </Typography>
-            <Typography variant="h3" color="success.main" gutterBottom>
-              Título H3 - Heading 3
-            </Typography>
-            <Typography variant="subtitle1" gutterBottom>
-              Subtítulo 1 - Subtitle 1
-            </Typography>
-            <Typography variant="body1" gutterBottom>
-              Body 1 - Este es un texto de cuerpo normal que se usa para el contenido principal.
-            </Typography>
-            <Typography variant="caption" display="block" gutterBottom>
-              Caption - Texto pequeño para anotaciones
-            </Typography>
+          <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+            Iniciar Sesión
+          </Typography>
+
+          <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%' }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="usuario"
+              label="Usuario"
+              name="usuario"
+              autoComplete="username"
+              autoFocus
+              value={usuario}
+              onChange={(e) => setUsuario(e.target.value)}
+            />
+
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Contraseña"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            {/* Alert de ERROR - Credenciales incorrectas */}
+            {mensajeError && (  // Solo se muestra si mensajeError == true
+              <Alert severity="error" sx={{ mt: 2 }}>
+                Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.
+              </Alert>
+            )}
+
+            {/* Alert de ÉXITO - Credenciales correctas */}
+            {mensajeExito && (  // Solo se muestra si mensajeExito == true
+              <Alert severity="success" sx={{ mt: 2 }}>
+                ¡Acceso concedido! Redirigiendo...
+              </Alert>
+            )}
+
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2, bgcolor: 'secondary.main' }}
+            >
+              Acceder
+            </Button>
           </Box>
-        </section>
-
-        <section> {/* Sección de botones*/}
-          <Box sx={{ mt: 4, display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Button variant="text" color="primary">
-              Text Primary
-            </Button>
-            <Button variant="contained" color="primary">
-              Contained Primary
-            </Button>
-            <Button variant="outlined" color="primary">
-              Outlined Primary
-            </Button>
-
-            <Button variant="contained" color="secondary">
-              Secondary
-            </Button>
-            <Button variant="contained" color="error">
-              Error
-            </Button>
-            <Button variant="contained" color="success">
-              Success
-            </Button>
-            <Button variant="contained" color="warning">
-              Warning
-            </Button>
-            <Button variant="contained" color="info">
-              Info
-            </Button>
-          </Box>
-        </section>
-      </Container>
-    </main>
+        </Paper>
+      </Box>
+    </Container>
   );
 }
 
