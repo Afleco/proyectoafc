@@ -12,7 +12,16 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom';
 
+//Importamos el useDispatch del react-redux
+import { useDispatch} from 'react-redux'
+//Importamos las acciones que están en el fichero authSlice.ts
+import { authActions } from '../store/authSlice';
+
+
 function Login() {
+  //Justo después de la definición de la función function Login(){ ponemos el hook useDispatch:
+  const dispatch = useDispatch()
+
   const [usuario, setUsuario] = useState('');
   const [password, setPassword] = useState('');
   const [mensajeError, setMensajeError] = useState(false);
@@ -35,6 +44,12 @@ function Login() {
       setMensajeError(false);  // Oculta Alert de error
       setMensajeExito(true);   // Muestra Alert de éxito
       
+      //aquí pongo el dispatch para cambiar el estado a login en el store del redux
+      dispatch(authActions.login({
+      name: usuario, //"usuario" es el nombre de usuario que ha ingresado el usuario
+      rol: 'administrador'
+      }))
+
       // Navegar a Home después de 1.5 segundos (para que se vea el Alert)
       setTimeout(() => {
         navigate('/home');
