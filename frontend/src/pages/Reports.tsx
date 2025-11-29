@@ -1,12 +1,16 @@
 import { Typography, Container } from '@mui/material';
+import Menu from '../components/Menu';
 
 function Reports() {
   return (
-    <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Typography variant="h1" color="secondary">
-        Página Reports de Alejandro Fleitas Correa
-      </Typography>
-    </Container>
+    <>
+      <Menu />
+      <Container maxWidth="md" sx={{ mt: 4 }}>
+        <Typography variant="h1" color="secondary">
+          Página Reports
+        </Typography>
+      </Container>
+    </>
   );
 }
 
