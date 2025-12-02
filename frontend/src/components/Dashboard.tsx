@@ -17,6 +17,8 @@ import {
 } from '@mui/material';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import AddIcon from '@mui/icons-material/Add';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../store/index';
 
 interface ItemType {
   id?: number;
@@ -38,6 +40,10 @@ function Dashboard() {
   const [tableData, setTableData] = useState<ItemType[]>([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+
+  // Obtener datos del usuario del store
+  const userData = useSelector((state: RootState) => state.authenticator);
+  const isAdmin = userData.userRol === 'admin' || userData.userRol === 'administrador';
 
   // Cargar datos al iniciar
   useEffect(() => {
@@ -73,6 +79,7 @@ function Dashboard() {
       if (result > 0) {
         setSnackbarMessage('¡Datos guardados con éxito!');
         setOpenSnackbar(true);
+        // Limpiar los campos del formulario
         setItem(itemInitialState);
         fetchItems(); // Actualizar tabla
       }
@@ -166,7 +173,10 @@ function Dashboard() {
         <Table aria-label="Tabla de items de colección">
           <TableHead>
             <TableRow sx={{ bgcolor: 'primary.main' }}>
-              <TableCell sx={{ color: 'black', fontWeight: 'bold' }}>Acciones</TableCell>
+              {/* Renderizado condicional: solo mostrar columna Acciones si es admin */}
+              {isAdmin && (
+                <TableCell sx={{ color: 'black', fontWeight: 'bold' }}>Acciones</TableCell>
+              )}
               <TableCell sx={{ color: 'black', fontWeight: 'bold' }}>Nombre</TableCell>
               <TableCell sx={{ color: 'black', fontWeight: 'bold' }}>Marca</TableCell>
               <TableCell sx={{ color: 'black', fontWeight: 'bold' }}>Tipo</TableCell>
@@ -176,15 +186,18 @@ function Dashboard() {
           <TableBody>
             {tableData.map((row: ItemType) => (
               <TableRow key={row.id} hover>
-                <TableCell>
-                  <IconButton
-                    onClick={() => handleDeleteItem(row)}
-                    color="error"
-                    aria-label="eliminar"
-                  >
-                    <DeleteForeverIcon />
-                  </IconButton>
-                </TableCell>
+                {/* Renderizado condicional: solo mostrar botón eliminar si es admin */}
+                {isAdmin && (
+                  <TableCell>
+                    <IconButton
+                      onClick={() => handleDeleteItem(row)}
+                      color="error"
+                      aria-label="eliminar"
+                    >
+                      <DeleteForeverIcon />
+                    </IconButton>
+                  </TableCell>
+                )}
                 <TableCell>{row.nombre}</TableCell>
                 <TableCell>{row.marca}</TableCell>
                 <TableCell>{row.tipo}</TableCell>

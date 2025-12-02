@@ -19,6 +19,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../store/index';
@@ -46,6 +47,9 @@ function Menu() {
     navigate('/');
   };
 
+  // Determinar si el usuario es admin
+  const isAdmin = userData.userRol === 'admin' || userData.userRol === 'administrador';
+
   return (
     <>
       <AppBar position="static" sx={{ bgcolor: 'secondary.main' }}>
@@ -61,12 +65,13 @@ function Menu() {
             <MenuIcon />
           </IconButton>
           
-          <Typography variant="h6" component="div" sx={{ color: 'black', fontWeight: 'bold',flexGrow: 1, textAlign: 'center' }}>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1, textAlign: 'center', color: 'black', fontWeight: 'Bold' }}>
             {userData.userName}
           </Typography>
           
-          <Avatar sx={{ bgcolor: 'white' }}>
-            <PersonIcon />
+          <Avatar sx={{ bgcolor: 'secondary.main' }}>
+            {/* Renderizado condicional: icono diferente según el rol */}
+            {isAdmin ? <AdminPanelSettingsIcon /> : <PersonIcon />}
           </Avatar>
         </Toolbar>
       </AppBar>
@@ -101,16 +106,19 @@ function Menu() {
               </ListItem>
             </Link>
 
-            <Link to="/reports" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <ListItemIcon>
-                    <AssessmentIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="Informes" />
-                </ListItemButton>
-              </ListItem>
-            </Link>
+            {/* Renderizado condicional: solo mostrar Informes si es admin */}
+            {isAdmin && (
+              <Link to="/reports" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <ListItem disablePadding>
+                  <ListItemButton>
+                    <ListItemIcon>
+                      <AssessmentIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Informes" />
+                  </ListItemButton>
+                </ListItem>
+              </Link>
+            )}
           </List>
           
           <Divider />
